@@ -30,6 +30,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Product findById(String productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public void update(String productId, String productName, int productQuantity) {
+        Product existingProduct = findById(productId);
+        if (existingProduct != null) {
+            existingProduct.setProductName(productName);
+            existingProduct.setProductQuantity(productQuantity);
+            productRepository.save(existingProduct);
+        }
+    }
+
+    @Override
     public void delete(String productId) {
         productRepository.delete(productId);
     }
