@@ -36,23 +36,9 @@ public class ProductController {
         return "productList";
     }
 
-    @GetMapping("/edit/{productId}")
-    public String editProductPage(@PathVariable String productId, Model model) {
-        System.out.println("Accessing edit page for productId: " + productId);
-        Product product = service.findById(productId);
-        model.addAttribute("product", product);
-        if (product == null) {
-            System.out.println("Produk tidak ditemukan!");
-            return "redirect:/product/list";
-        }
-        return "editProduct";
-    }
-
-    @PostMapping("/edit/{productId}")
-    public String editProductPost(@PathVariable String productId,
-                                  @RequestParam String productName,
-                                  @RequestParam int productQuantity) {
-        service.update(productId, productName, productQuantity);
+    @GetMapping("/delete/{productId}")
+    public String deleteProduct(@PathVariable String productId) {
+        service.delete(productId);
         return "redirect:/product/list";
     }
 }
