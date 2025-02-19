@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 //import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -136,4 +137,104 @@ class ProductRepositoryTest {
         assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", savedProduct.getProductId());
     }
 
+    @Test
+    void testFindByIdSuccess() {
+        Product product = new Product();
+        product.setProductId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        product.setProductName("Sampo Cap Bambang");
+        product.setProductQuantity(100);
+        productRepository.create(product);
+
+        Optional<Product> foundProduct = productRepository.findById("eb558e9f-1c39-460e-8860-71af6af63bd6");
+
+        assertTrue(foundProduct.isPresent());
+        assertEquals(product.getProductId(), foundProduct.get().getProductId());
+        assertEquals(product.getProductName(), foundProduct.get().getProductName());
+        assertEquals(product.getProductQuantity(), foundProduct.get().getProductQuantity());
+    }
+
+    @Test
+    void testFindByIdNotFound() {
+        Optional<Product> foundProduct = productRepository.findById("invalid-id");
+
+        assertFalse(foundProduct.isPresent());
+    }
+
+    @Test
+    void testEditProductInMiddle() {
+        // Produk pertama
+        Product product1 = new Product();
+        product1.setProductId("1111");
+        product1.setProductName("Sampo A");
+        product1.setProductQuantity(10);
+        productRepository.create(product1);
+
+        // Produk kedua (target update)
+        Product product2 = new Product();
+        product2.setProductId("2222");
+        product2.setProductName("Sampo B");
+        product2.setProductQuantity(20);
+        productRepository.create(product2);
+
+        // Produk ketiga
+        Product product3 = new Product();
+        product3.setProductId("3333");
+        product3.setProductName("Sampo C");
+        product3.setProductQuantity(30);
+        productRepository.create(product3);
+
+        // Produk yang akan menggantikan produk2
+        Product updatedProduct2 = new Product();
+        updatedProduct2.setProductId("2222"); // ID sama dengan product2
+        updatedProduct2.setProductName("Sampo B - Update");
+        updatedProduct2.setProductQuantity(50);
+
+        // Simpan perubahan
+        productRepository.save(updatedProduct2);
+
+        // Ambil produk yang diupdate
+        Optional<Product> foundProduct = productRepository.findById("2222");
+        assertTrue(foundProduct.isPresent());
+        assertEquals("Sampo B - Update", foundProduct.get().getProductName());
+        assertEquals(50, foundProduct.get().getProductQuantity());
+    }
+
+    @Test
+    void testEditProductAtEnd() {
+        // Produk pertama
+        Product product1 = new Product();
+        product1.setProductId("1111");
+        product1.setProductName("Sampo A");
+        product1.setProductQuantity(10);
+        productRepository.create(product1);
+
+        // Produk kedua
+        Product product2 = new Product();
+        product2.setProductId("2222");
+        product2.setProductName("Sampo B");
+        product2.setProductQuantity(20);
+        productRepository.create(product2);
+
+        // Produk ketiga (akan diperbarui)
+        Product product3 = new Product();
+        product3.setProductId("3333");
+        product3.setProductName("Sampo C");
+        product3.setProductQuantity(30);
+        productRepository.create(product3);
+
+        // Produk yang akan menggantikan produk 3
+        Product updatedProduct3 = new Product();
+        updatedProduct3.setProductId("3333");
+        updatedProduct3.setProductName("Sampo C - Update");
+        updatedProduct3.setProductQuantity(60);
+
+        // Simpan perubahan
+        productRepository.save(updatedProduct3);
+
+        // Ambil produk yang diupdate
+        Optional<Product> foundProduct = productRepository.findById("3333");
+        assertTrue(foundProduct.isPresent());
+        assertEquals("Sampo C - Update", foundProduct.get().getProductName());
+        assertEquals(60, foundProduct.get().getProductQuantity());
+    }
 }
