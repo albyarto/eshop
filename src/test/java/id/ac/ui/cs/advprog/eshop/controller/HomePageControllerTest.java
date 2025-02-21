@@ -24,6 +24,6 @@ class HomePageControllerTest {
     void testHomePage() {
         Model model = mock(Model.class);
         String viewName = homePageController.createProductPage(model);
-        assertEquals("homePage", viewName);
+        assertEquals("HomePage", viewName);
     }
 }
