@@ -5,7 +5,7 @@
 # Module 1
 ## Reflection 1
 
-### After writing the unit test, how do you feel? How many unit tests should be made in a class? How to make sure that our unit tests are enough to verify our program? It would be good if you learned about code coverage. Code coverage is a metric that can help you understand how much of your source is tested. If you have 100% code coverage, does that mean your code has no bugs or errors? 
+> After writing the unit test, how do you feel? How many unit tests should be made in a class? How to make sure that our unit tests are enough to verify our program? It would be good if you learned about code coverage. Code coverage is a metric that can help you understand how much of your source is tested. If you have 100% code coverage, does that mean your code has no bugs or errors? 
 
 Dalam pengembangan aplikasi **EShop**, saya mengutamakan penulisan kode yang bersih dan terstruktur dengan menerapkan prinsip **clean code**. 
 Proyek ini juga dibagi ke dalam empat paket utama,**controller, model, repository,** dan **service**,sehingga setiap komponen memiliki tanggung jawab 
@@ -26,7 +26,7 @@ Selain itu, implementasi _custom exception handling_ akan ditambahkan agar pesan
 
 ## Reflection 2
 
-### Suppose that after writing the CreateProductFunctionalTest.java along with the corresponding test case, you were asked to create another functional test suite that verifies the number of items in the product list. You decided to create a new Java class similar to the prior functional test suites with the same setup procedures and instance variables. What do you think about the cleanliness of the code of the new functional test suite? Will the new code reduce the code quality? Identify the potential clean code issues, explain the reasons, and suggest possible improvements to make the code cleaner!
+> Suppose that after writing the CreateProductFunctionalTest.java along with the corresponding test case, you were asked to create another functional test suite that verifies the number of items in the product list. You decided to create a new Java class similar to the prior functional test suites with the same setup procedures and instance variables. What do you think about the cleanliness of the code of the new functional test suite? Will the new code reduce the code quality? Identify the potential clean code issues, explain the reasons, and suggest possible improvements to make the code cleaner!
 
 Mengerjakan **unit test** dan **functional test** untuk aplikasi **EShop** memberikan wawasan lebih mendalam mengenai cara kerja sistem serta meningkatkan keyakinan terhadap kestabilan kode. 
 **Unit test** berperan dalam memastikan setiap komponen berjalan sesuai fungsinya, sekaligus membantu mengidentifikasi edge case yang sebelumnya mungkin terlewat. 
@@ -47,11 +47,12 @@ seiring waktu.
 # Module 2
 ## Refleksi
 
-### List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
+> List the code quality issue(s) that you fixed during the exercise and explain your strategy on fixing them.
 - Menghapus unused import `org.springframework.web.bind.annotation.` Pada kode program, perlu dilakukan penyederhanaan dengan menghapus impor yang tidak digunakan atau tidak diperlukan, seperti `import org.springframework.web.bind.annotation.*;`. Sebagai gantinya, hanya elemen-elemen spesifik dari package tersebut yang benar-benar digunakan dalam kode yang harus diimpor untuk meningkatkan keterbacaan dan efisiensi.
 - Menghapus unnecessary modifier `public` pada metode-metode di dalam `ProductService.java`. Hal ini dikarenakan dalam Java, metode dalam antarmuka (`interface`) secara default sudah bersifat `public`, sehingga tidak perlu dinyatakan kembali secara eksplisit. Dengan melakukan perubahan ini, kode akan menjadi lebih bersih, ringkas, dan lebih sesuai dengan best practice dalam pengembangan perangkat lunak.
 
-### Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
+> Look at your CI/CD workflows (GitHub)/pipelines (GitLab). Do you think the current implementation has met the definition of Continuous Integration and Continuous Deployment? Explain the reasons (minimum 3 sentences)!
+
 Berikut adalah tiga alasan mengapa implementasi CI/CD yang saya buat sudah sesuai dengan prinsip _Continuous Integration_ dan _Continuous Deployment_:  
 
 #### 1. **Continuous Integration**  
@@ -64,3 +65,83 @@ Berikut adalah tiga alasan mengapa implementasi CI/CD yang saya buat sudah sesua
    Dalam tahap _Continuous Deployment_, saya menggunakan layanan _Koyeb_, yang memungkinkan setiap perubahan pada branch _master_ langsung diterapkan ke _production environment_. Dengan kata lain, setiap kali ada _push_ atau _pull request_ yang diterima di branch utama, _Koyeb_ akan menangani proses _deployment_ secara otomatis. Pendekatan ini mempercepat _Software Development Cycle_, sehingga fitur dan perbaikan dapat segera diakses oleh pengguna tanpa perlu proses _deployment_ manual yang berpotensi memakan waktu.  
 
 Dengan ketiga aspek ini—_automated testing and build_, _security and code quality enforcement_, serta _automatic deployment_—workflow yang saya buat saya rasa sudah sepenuhnya mencerminkan prinsip CI/CD yang efektif dan sesuai dengan best practice.
+
+# Module 3
+## Refleksi
+
+> Explain what principles you apply to your project
+
+### Single Responsibility Principle (SRP):
+Saya menerapkan SRP dengan memastikan setiap kelas hanya memiliki satu tanggung jawab utama. Untuk itu, saya memisahkan kelas `ProductController` dan `CarController`, di mana masing-masing kelas hanya menangani permintaan HTTP terkait `Product` dan `Car` secara terpisah.  
+
+### Open-Closed Principle (OCP): 
+Saya mengimplementasikan OCP dengan memungkinkan ekstensi tanpa perlu mengubah kode yang sudah ada. Contohnya, `CarService` sebagai sebuah interface diimplementasikan oleh `CarServiceImpl`, sehingga saya dapat menambahkan fungsionalitas baru tanpa harus mengubah struktur dasar **CarService** itu sendiri.  
+
+### Liskov Substitution Principle (LSP):
+LSP memastikan bahwa subclass dapat menggantikan superclass tanpa mengganggu fungsionalitasnya. Dalam kode saya, `CarServiceImpl` meng-override metode yang ada di `CarService` tanpa mengubah perilaku yang sudah ada, sehingga dapat digunakan di mana pun `CarService` dibutuhkan.  
+
+### Interface Segregation Principle (ISP):
+Saya memecah interface besar menjadi beberapa interface yang lebih kecil dan spesifik. Dalam implementasi saya, interface `Product` dan `Car` dipisahkan agar tidak tergabung dalam satu interface besar, sehingga masing-masing hanya menangani tugas yang lebih terfokus dan sesuai dengan tanggung jawabnya.  
+
+### Dependency Inversion Principle (DIP):
+Prinsip ini diterapkan dengan memastikan bahwa kelas bergantung pada abstraksi, bukan pada implementasi konkret. Dalam kode saya, `CarController` mengakses metode dalam `CarServiceImpl` melalui interface `CarService`, bukan langsung menggunakan implementasi konkret `CarServiceImpl`, sehingga meningkatkan fleksibilitas dan mengurangi ketergantungan antar kelas.
+
+> Explain the advantages of applying SOLID principles to your project with examples.
+
+## Keuntungan Menerapkan Prinsip SOLID
+
+### Single Responsibility Principle (SRP)  
+Konsep : Setiap kelas hanya memiliki satu tanggung jawab.  
+   - Membantu menjaga kode tetap mudah dikelola karena perubahan pada satu aspek sistem tidak akan memengaruhi aspek lain yang tidak terkait.
+
+*Contoh:* Jika kita tidak memisahkan controller dalam aplikasi, `ProductController` bisa menjadi terlalu besar dan sulit dikelola. Memisahkan `CarController` dan `ProductController` sesuai dengan **SRP**, sehingga setiap kelas hanya menangani satu tugas.
+
+### Open/Closed Principle (OCP)  
+Konsep : *Software entities* (kelas, modul, fungsi, dll.) harus terbuka untuk extension tetapi tertutup untuk modifikasi.  
+   - Memungkinkan kita menambah fitur tanpa mengubah kode yang sudah ada, sehingga mengurangi risiko adanya bug dan kode lebih stabil.  
+
+### Liskov Substitution Principle (LSP)  
+Konsep : Objek dari superclass harus dapat digantikan dengan objek dari subclassnya tanpa mengganggu fungsi program.  
+   - Memastikan bahwa subtipe dapat digunakan secara bergantian dengan tipe induknya, meningkatkan penggunaan polimorfisme dan mencegah perilaku yang tidak diharapkan.  
+
+### Interface Segregation Principle (ISP)  
+Konsep : Kelas tidak boleh dipaksa untuk mengimplementasikan `interface` yang tidak digunakannya.  
+   - Mendorong pembuatan `interface` yang lebih kecil dan lebih spesifik agar kelas tidak terbebani dengan metode yang tidak diperlukan.  
+
+### Dependency Inversion Principle (DIP)  
+Konsep : Modul tingkat tinggi tidak boleh bergantung pada modul tingkat rendah. Keduanya harus bergantung pada abstraksi.  
+   - Mendorong ketergantungan dengan kelas abstraksi daripada ketergantungan antar kelas konkrit, sehingga sistem lebih fleksibel dan mudah dikelola.
+
+*Contoh:* Alih-alih ``CarController`` langsung bergantung pada ``CarServiceImpl``, lebih baik ``CarController`` bergantung pada ``CarService`` (interface), sehingga implementasi ``CarServiceImpl`` bisa diganti tanpa mengubah ``CarController``.
+
+### **Beberapa Manfaat dari Penerapan SOLID**  
+- Maintainability: Kode lebih mudah dipahami, dimodifikasi, dan diperbarui.
+- Flexibility: Kode lebih mudah beradaptasi dengan perubahan tanpa mengganggu sistem secara keseluruhan.  
+- Scalability: Desain modular yang sesuai dengan prinsip SOLID memudahkan pengembangan lebih lanjut.  
+- Lebih Readable: Kode lebih bersih dan mudah dipahami.  
+- Lebih Mudah Ditest: Komponen yang mengikuti SOLID lebih mudah diuji secara terpisah.  
+
+<br>
+
+> Explain the disadvantages of not applying SOLID principles to your project with examples.
+## **Kerugian Jika Tidak Menerapkan Prinsip SOLID**  
+
+#### - Kode Kaku dan Rentan (Melanggar SRP) 
+*Contoh:* Jika satu kelas memiliki terlalu banyak tanggung jawab, mengubah satu fitur bisa memengaruhi bagian lain yang tidak berhubungan, menyebabkan bug yang sulit dideteksi.  
+
+#### - Sulit Diextend (Melanggar OCP) 
+*Contoh:* Jika kita harus mengubah kode yang sudah ada setiap kali menambahkan fitur baru, maka risiko menimbulkan bug meningkat dan sistem menjadi tidak stabil.  
+
+#### - Kesalahan dalam Penggunaan Subtipe (Melanggar LSP)  
+*Contoh:* Jika subclass tidak mempertahankan perilaku dari superclass, substitusi bisa menyebabkan error yang tidak terduga dalam program.  
+
+#### - Interface yang Tidak Optimal (Melanggar ISP)
+*Contoh:* Jika sebuah kelas dipaksa untuk mengimplementasikan metode yang tidak digunakannya, maka akan ada banyak metode kosong atau tidak relevan dalam kelas tersebut, yang menyebabkan kode sulit dikelola.  
+
+#### - Ketergantungan yang Kuat (Melanggar DIP)
+*Contoh:* Jika `CarController` langsung bergantung pada `CarServiceImpl` tanpa abstraksi, maka sulit untuk mengganti atau menguji kode dengan mock, sehingga meningkatkan kompleksitas pengujian.  
+
+### **Dampak Buruk Jika Tidak Menggunakan SOLID**  
+- Kode Sulit Dibaca dan Dikelola: Struktur kode menjadi berantakan dan sulit dimengerti.
+- Mengurangi efisiensi dalam development: Semakin lama, kode yang buruk akan sulit diperbaiki dan memakan lebih banyak waktu dalam pengembangan.  
+- Sistem Sulit Dilakukan Test: Kode yang tidak modular akan sulit diuji secara terpisah, meningkatkan risiko bug yang tidak terdeteksi.  
