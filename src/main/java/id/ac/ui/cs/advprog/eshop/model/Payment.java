@@ -24,6 +24,12 @@ public class Payment {
             this.method = method;
         }
 
+        if (method.equals(PaymentMethod.VOUCHER.getValue())) {
+            validateVoucherPayment();
+        } else if (method.equals(PaymentMethod.CASH_ON_DELIVERY.getValue())) {
+            validateCashOnDeliveryPayment();
+        }
+
         if(order == null){
             throw new IllegalArgumentException();
         } else {
@@ -39,5 +45,34 @@ public class Payment {
         } else {
             throw new IllegalArgumentException();
         }
+    }
+
+    private void validateVoucherPayment() {
+        String voucher = paymentData.get("voucherCode");
+        if ((voucher != null && voucher.length() == 16) && voucher.startsWith("ESHOP") && countDigit(voucher) == 8) {
+            this.status = PaymentStatus.SUCCESS.getValue();
+        } else {
+            this.status = PaymentStatus.REJECTED.getValue();
+        }
+    }
+
+    private void validateCashOnDeliveryPayment() {
+        String address = paymentData.get("address");
+        String deliveryFee = paymentData.get("deliveryFee");
+        if (address != null && !address.isEmpty() && deliveryFee != null && !deliveryFee.isEmpty()) {
+            this.status = PaymentStatus.SUCCESS.getValue();
+        } else {
+            this.status = PaymentStatus.REJECTED.getValue();
+        }
+    }
+
+    private int countDigit(String code){
+        int count = 0;
+        for (int i = 0; i < code.length(); i++) {
+            if (Character.isDigit(code.charAt(i))) {
+                count++;
+            }
+        }
+        return count;
     }
 }
