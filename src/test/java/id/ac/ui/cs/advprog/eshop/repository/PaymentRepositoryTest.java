@@ -49,10 +49,7 @@ class PaymentRepositoryTest {
 
         Payment findResult = paymentRepository.findById(payment1.getId());
         assertEquals(payment1.getId(), result.getId());
-        assertEquals(payment1.getId(), findResult.getId());
-        assertEquals(payment1.getMethod(), findResult.getMethod());
-        assertEquals(payment1.getStatus(), findResult.getStatus());
-        assertEquals(payment1.getPaymentData(), findResult.getPaymentData());
+        assertPaymentEquals(payment1, findResult);
     }
 
     @Test
@@ -67,10 +64,7 @@ class PaymentRepositoryTest {
 
         Payment findResult = paymentRepository.findById(payment1.getId());
         assertEquals(updatedPayment.getId(), result.getId());
-        assertEquals(updatedPayment.getId(), findResult.getId());
-        assertEquals(updatedPayment.getMethod(), findResult.getMethod());
-        assertEquals(updatedPayment.getStatus(), findResult.getStatus());
-        assertEquals(updatedPayment.getPaymentData(), findResult.getPaymentData());
+        assertPaymentEquals(updatedPayment, findResult);
 
         assertEquals(1, paymentRepository.findAll().size());
     }
@@ -121,5 +115,13 @@ class PaymentRepositoryTest {
 
         List<Payment> allPayments = paymentRepository.findAll();
         assertTrue(allPayments.isEmpty());
+    }
+
+    // Extract Method: Moved assertion logic to a reusable method
+    private void assertPaymentEquals(Payment expected, Payment actual) {
+        assertEquals(expected.getId(), actual.getId());
+        assertEquals(expected.getMethod(), actual.getMethod());
+        assertEquals(expected.getStatus(), actual.getStatus());
+        assertEquals(expected.getPaymentData(), actual.getPaymentData());
     }
 }
