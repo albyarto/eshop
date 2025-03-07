@@ -14,11 +14,10 @@ public class PaymentRepository {
         int i = 0;
         for (Payment savedPayment : paymentData) {
             if (savedPayment.getId().equals(payment.getId())) {
-                paymentData.remove(i);
-                paymentData.add(i, payment);
+                paymentData.set(i, payment);
                 return payment;
             }
-            i += 1;
+            i++;
         }
 
         paymentData.add(payment);
@@ -26,12 +25,10 @@ public class PaymentRepository {
     }
 
     public Payment findById(String id) {
-        for (Payment savedPayment : paymentData) {
-            if (savedPayment.getId().equals(id)) {
-                return savedPayment;
-            }
-        }
-        return null;
+        return paymentData.stream()
+                .filter(payment -> payment.getId().equals(id))
+                .findFirst()
+                .orElse(null);
     }
 
     public List<Payment> findAll() {
