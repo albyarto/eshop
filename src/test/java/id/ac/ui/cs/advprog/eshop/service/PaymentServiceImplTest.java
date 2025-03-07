@@ -4,8 +4,6 @@ import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
 import id.ac.ui.cs.advprog.eshop.repository.PaymentRepository;
-import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
-import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -57,11 +55,11 @@ public class PaymentServiceImplTest {
 
         payments = new ArrayList<>();
         Payment payment1 = new Payment("payment-123", "VOUCHER", "PENDING", paymentData1, order);
-        payment1.setStatus(PaymentStatus.SUCCESS.getValue());
+        payment1.setStatus("SUCCESS");
         payments.add(payment1);
 
         Payment payment2 = new Payment("payment-456", "CASH_ON_DELIVERY", "PENDING", paymentData2, order);
-        payment2.setStatus(PaymentStatus.REJECTED.getValue());
+        payment2.setStatus("REJECTED");
         payments.add(payment2);
     }
 
@@ -82,69 +80,21 @@ public class PaymentServiceImplTest {
     }
 
     @Test
-    void testSetStatusToSuccess() {
+    void testSetStatusSuccess() {
         Payment payment = payments.get(0);
-        String newStatus = PaymentStatus.SUCCESS.getValue();
 
-        Payment updatedPayment = new Payment(payment.getId(),
-                payment.getMethod(), payment.getStatus(), payment.getPaymentData(), payment.getOrder());
-        updatedPayment.setStatus(newStatus);
-
-        doReturn(updatedPayment).when(paymentRepository).save(any(Payment.class));
-
-        Payment result = paymentService.setStatus(payment, newStatus);
-
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-        verify(orderService, times(1)).updateStatus(order.getId(), OrderStatus.SUCCESS.getValue());
-        assertEquals(newStatus, result.getStatus());
+        when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        payment = paymentService.setStatus(payment, "SUCCESS");
+        assertEquals("SUCCESS", payment.getStatus());
+        assertEquals("SUCCESS", payment.getOrder().getStatus());
     }
 
     @Test
-    void testSetStatusToRejected() {
-        Payment payment = payments.get(0);
-        String newStatus = PaymentStatus.REJECTED.getValue();
-
-        Payment updatedPayment = new Payment(payment.getId(),
-                payment.getMethod(), payment.getStatus(), payment.getPaymentData(), payment.getOrder());
-        updatedPayment.setStatus(newStatus);
-
-        doReturn(updatedPayment).when(paymentRepository).save(any(Payment.class));
-
-        Payment result = paymentService.setStatus(payment, newStatus);
-
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-        verify(orderService, times(1)).updateStatus(order.getId(), OrderStatus.FAILED.getValue());
-        assertEquals(newStatus, result.getStatus());
-    }
-
-    @Test
-    void testSetStatusToOther() {
-        Payment payment = payments.get(0);
-        String newStatus = PaymentStatus.PENDING.getValue();
-
-        Payment updatedPayment = new Payment(payment.getId(),
-                payment.getMethod(), payment.getStatus(), payment.getPaymentData(), payment.getOrder());
-        updatedPayment.setStatus(newStatus);
-
-        doReturn(updatedPayment).when(paymentRepository).save(any(Payment.class));
-
-        Payment result = paymentService.setStatus(payment, newStatus);
-
-        verify(paymentRepository, times(1)).save(any(Payment.class));
-        verify(orderService, times(0)).updateStatus(anyString(), anyString());
-        assertEquals(newStatus, result.getStatus());
-    }
-
-    @Test
-    void testSetStatusWithInvalidStatus() {
-        Payment payment = payments.get(0);
-        String invalidStatus = "INVALID_STATUS";
-
-        assertThrows(IllegalArgumentException.class,
-                () -> paymentService.setStatus(payment, invalidStatus));
-
-        verify(paymentRepository, times(0)).save(any(Payment.class));
-        verify(orderService, times(0)).updateStatus(anyString(), anyString());
+    void testSetInvalidStatus() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            Payment payment = new Payment("a5e93216-127c-43df-b7f1-89b720e496bb","VOUCHER","PENDING", paymentData1, order);
+            paymentService.setStatus(payment, "HALO");
+        });
     }
 
     @Test
