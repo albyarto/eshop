@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop.repository;
 
+import id.ac.ui.cs.advprog.eshop.enums.PaymentMethod;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -35,12 +36,12 @@ class PaymentRepositoryTest {
 
         Map<String, String> paymentData1 = new HashMap<>();
         paymentData1.put("voucherCode", "ESHOP1234ABC5678");
-        payment1 = new Payment("fa254f7n-3e45-667u-9988-98jh77yui900", "VOUCHER", "PENDING", paymentData1, order1);
+        payment1 = new Payment("fa254f7n-3e45-667u-9988-98jh77yui900", PaymentMethod.VOUCHER.getValue(), "PENDING", paymentData1, order1);
 
         Map<String, String> paymentData2 = new HashMap<>();
         paymentData2.put("address", "Margonda");
         paymentData2.put("deliveryFee", "10");
-        payment2 = new Payment("a2c62328-4a37-4664-83c7-f32db8620155", "CASH_ON_DELIVERY", "SUCCESS", paymentData2, order2);
+        payment2 = new Payment("a2c62328-4a37-4664-83c7-f32db8620155", PaymentMethod.CASH_ON_DELIVERY.getValue(), "SUCCESS", paymentData2, order2);
     }
 
     @Test
@@ -58,7 +59,7 @@ class PaymentRepositoryTest {
 
         Map<String, String> updatedData = new HashMap<>();
         updatedData.put("voucherCode", "ESHOP12321321");
-        Payment updatedPayment = new Payment(payment1.getId(), "CASH_ON_DELIVERY", "SUCCESS", updatedData, order1);
+        Payment updatedPayment = new Payment(payment1.getId(), PaymentMethod.CASH_ON_DELIVERY.getValue(), "SUCCESS", updatedData, order1);
 
         Payment result = paymentRepository.save(updatedPayment);
 
