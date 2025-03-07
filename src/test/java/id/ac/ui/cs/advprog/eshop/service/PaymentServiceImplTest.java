@@ -1,5 +1,7 @@
 package id.ac.ui.cs.advprog.eshop.service;
 
+import id.ac.ui.cs.advprog.eshop.enums.OrderStatus;
+import id.ac.ui.cs.advprog.eshop.enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop.model.Order;
 import id.ac.ui.cs.advprog.eshop.model.Payment;
 import id.ac.ui.cs.advprog.eshop.model.Product;
@@ -55,11 +57,11 @@ public class PaymentServiceImplTest {
 
         payments = new ArrayList<>();
         Payment payment1 = new Payment("payment-123", "VOUCHER", "PENDING", paymentData1, order);
-        payment1.setStatus("SUCCESS");
+        payment1.setStatus(PaymentStatus.SUCCESS.getValue());
         payments.add(payment1);
 
         Payment payment2 = new Payment("payment-456", "CASH_ON_DELIVERY", "PENDING", paymentData2, order);
-        payment2.setStatus("REJECTED");
+        payment2.setStatus(PaymentStatus.REJECTED.getValue());
         payments.add(payment2);
     }
 
@@ -67,7 +69,7 @@ public class PaymentServiceImplTest {
     void testAddPayment() {
         String paymentMethod = "VOUCHER";
 
-        Payment expectedPayment = new Payment("new-payment-id", paymentMethod, "SUCCESS", paymentData1, order);
+        Payment expectedPayment = new Payment("new-payment-id", paymentMethod, PaymentStatus.SUCCESS.getValue(), paymentData1, order);
         doReturn(expectedPayment).when(paymentRepository).save(any(Payment.class));
 
         Payment result = paymentService.addPayment(order, paymentMethod, paymentData1);
@@ -84,9 +86,9 @@ public class PaymentServiceImplTest {
         Payment payment = payments.get(0);
 
         when(paymentRepository.save(any(Payment.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        payment = paymentService.setStatus(payment, "SUCCESS");
-        assertEquals("SUCCESS", payment.getStatus());
-        assertEquals("SUCCESS", payment.getOrder().getStatus());
+        payment = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
+        assertEquals(OrderStatus.SUCCESS.getValue(), payment.getOrder().getStatus());
     }
 
     @Test

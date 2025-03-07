@@ -18,7 +18,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
         String id = UUID.randomUUID().toString();
-        Payment payment = new Payment(id, method,"PENDING", paymentData, order);
+        Payment payment = new Payment(id, method,PaymentStatus.PENDING.getValue(), paymentData, order);
         if (payment.getStatus().equals(PaymentStatus.SUCCESS.getValue())) {
             payment.getOrder().setStatus(OrderStatus.SUCCESS.getValue());
         } else {
